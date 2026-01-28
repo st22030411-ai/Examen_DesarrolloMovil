@@ -4,38 +4,54 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isDark = false;
+
+  @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CounterScreen(),
+      theme: isDark ? ThemeData.dark() : ThemeData.light(),
+      home: HomePage(
+        onToggleTheme: () {
+          setState(() {
+            isDark = !isDark;
+          });
+        },
+      ),
     );
   }
 }
 
-class CounterScreen extends StatefulWidget {
-  const CounterScreen({super.key});
+class HomePage extends StatefulWidget {
+  final VoidCallback onToggleTheme;
+
+  const HomePage({super.key, required this.onToggleTheme});
 
   @override
-  State<CounterScreen> createState() => _CounterScreenState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _CounterScreenState extends State<CounterScreen> {
-  int counter = 0;
+class _HomePageState extends State<HomePage> {
+  int contador = 0;
 
-  void increment() {
+  void incrementar() {
     setState(() {
-      counter++;
+      contador++;
     });
   }
 
-  void decrement() {
-    if (counter > 0) {
+  void decrementar() {
+    if (contador > 0) {
       setState(() {
-        counter--;
+        contador--;
       });
     }
   }
@@ -44,34 +60,36 @@ class _CounterScreenState extends State<CounterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Examen de Desarrollo movil',
-          style: TextStyle(fontSize: 30),
-        ),
-        centerTitle: true,
+        backgroundColor: Colors.amber,
+        title: const Text("mi primera app"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.brightness_6),
+            onPressed: widget.onToggleTheme,
+          ),
+        ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
+            const Text("hola flutter", style: TextStyle(fontSize: 24)),
+
             const SizedBox(height: 20),
-            Text(
-              '$counter',
-              style: TextStyle(
-                fontSize: 60,
-                fontWeight: FontWeight.bold,
-                color: counter > 12
-                    ? const Color.fromARGB(255, 54, 244, 228)
-                    : Colors.black,
-              ),
-            ),
-            const SizedBox(height: 30),
+
+            Text("$contador", style: const TextStyle(fontSize: 40)),
+
+            const SizedBox(height: 20),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(onPressed: decrement, child: const Text('-')),
-                const SizedBox(width: 20),
-                ElevatedButton(onPressed: increment, child: const Text('+')),
+                ElevatedButton(onPressed: decrementar, child: const Text("-")),
+
+                const SizedBox(width: 10),
+
+                ElevatedButton(onPressed: incrementar, child: const Text("+")),
               ],
             ),
           ],
